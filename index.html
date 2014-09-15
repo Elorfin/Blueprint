@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>BluePrint Drawer</title>
+
+        <link rel="stylesheet" media="all" type="text/css" href="css/main.css" />
+
+        <script type="text/javascript" src="js/Namespaces.js"></script>
+
+        <script type="text/javascript" src="js/Command/CommandDelegator.js"></script>
+
+        <script type="text/javascript" src="js/Input/User/MouseInput.js"></script>
+
+        <script type="text/javascript" src="js/Draw/Line.js"></script>
+
+        <script type="text/javascript" src="js/Factory/CursorFactory.js"></script>
+        <script type="text/javascript" src="js/Factory/LayerFactory.js"></script>
+        <script type="text/javascript" src="js/Factory/ToolFactory.js"></script>
+        <script type="text/javascript" src="js/Factory/KeyFactory.js"></script>
+
+        <script type="text/javascript" src="js/Cursor/Common/AbstractCursor.js"></script>
+        <script type="text/javascript" src="js/Cursor/WallCursor.js"></script>
+
+        <script type="text/javascript" src="js/Key/Common/AbstractKey.js"></script>
+        <script type="text/javascript" src="js/Key/Common/DraggableKey.js"></script>
+        <script type="text/javascript" src="js/Key/WallKey.js"></script>
+
+        <script type="text/javascript" src="js/Tool/Common/AbstractTool.js"></script>
+        <script type="text/javascript" src="js/Tool/WallTool.js"></script>
+
+        <script type="text/javascript" src="js/Layer/Common/AbstractLayer.js"></script>
+        <script type="text/javascript" src="js/Layer/GridLayer.js"></script>
+        <script type="text/javascript" src="js/Layer/WallLayer.js"></script>
+
+        <script type="text/javascript" src="js/Renderer/2DRenderer.js"></script>
+
+        <script type="text/javascript" src="js/Blueprint.js"></script>
+    </head>
+
+    <body>
+        <div class="control-panel">
+            <button type="button">Wall</button>
+            <button type="button">Window</button>
+            <button type="button">Door</button>
+        </div>
+        <div id="blueprint"></div>
+    </body>
+
+    <script type="text/javascript">
+        (function () {
+            var container = document.getElementById('blueprint');
+
+            var blueprint = new Blueprint(container, [
+                'Grid',
+                'Wall'
+            ]);
+
+            /*var layers = new Factory.LayerFactory(container);
+            var grid = new Layer.GridLayer(layers, true);
+            var input = new Input.User.MouseInput(container, grid);
+
+            var keyFactory = new Factory.KeyFactory(grid, input);
+
+            var wallTool = new Tool.WallTool(layers, keyFactory, input, grid);*/
+        })();
+    </script>
+</html>

@@ -1,0 +1,41 @@
+html {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#blueprint {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.control-panel {
+    position: absolute;
+    z-index: 100000;
+    right: 10px;
+    top: 10px;
+}
+
+.wall-key {
+    position: absolute;
+    border: 2px solid;
+    padding: 0;
+    z-index: 100;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.6);
+}
