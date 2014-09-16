@@ -1,113 +1,81 @@
-'use strict';
+/**
+ * Layer Factory
+ */
+(function () {
+    'use strict';
 
-Factory.LayerFactory = function (container) {
-    this.container = container;
+    /**
+     * Class constructor
+     * @param {HTMLElement} container
+     * @constructor
+     */
+    Factory.LayerFactory = function (GridFrame, KeyFrame, container) {
+        // Call parent constructor
+        Factory.Common.AbstractFactory.call(this, GridFrame, KeyFrame);
 
-    this.width  = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
+        this.container = container;
 
-    var obj = this;
-    window.addEventListener('resize', function () {
-        obj.width  = obj.container.offsetWidth;
-        obj.height = obj.container.offsetHeight;
+        this.rendererFactory = new Factory.RendererFactory(container);
+    };
 
-        // Resize all layers
-        obj.resizeLayers();
-    });
-};
+    /**
+     * Extends AbstractFactory
+     * @type {Factory.Common.AbstractFactory}
+     */
+    Factory.LayerFactory.prototype = Object.create(Factory.Common.AbstractFactory.prototype);
+    Factory.LayerFactory.prototype.constructor = Factory.LayerFactory;
 
-Factory.LayerFactory.prototype = {
-    container: null,
+    Factory.LayerFactory.prototype.container = null;
 
-    width: 0,
-    height: 0,
+    Factory.LayerFactory.prototype.rendererFactory = null;
 
-    layers: {},
+    Factory.LayerFactory.prototype.layerIndex = 1;
 
-    layerIndex: 1,
+    Factory.LayerFactory.prototype.create = function (layerName) {
+        var layer = null;
+        if (Layer[layerName]) {
+            // Requested Layer exists
+            var constructor = Layer[layerName].toString();
 
-    constructor: Factory.LayerFactory,
+            // Find needed components by analyzing args of constructor
+            var args = constructor.toString().match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)[1].split(',');
 
-    getContainer: function () {
-        return this.container;
-    },
+            // Remove fixed params
+            args = args.filter(function (element) {
+                return element.trim() !== 'zIndex' && element.trim() !== 'GridFrame';
+            });
 
-    getSize: function () {
-        return { x: this.width, y: this.height };
-    },
+            var constructorArgs = [this.layerIndex, this.gridFrame];
+            for (var i = 0; i < args.length; i++) {
+                var arg = args[i].trim();
 
-    resizeLayers: function () {
-        for (var layer in this.layers) {
-            this.resizeLayer(layer);
-        }
+                // Retrieve factory to deliver arguments
+                var parts = arg.split(/(?=[A-Z])/);
 
-        return this;
-    },
-
-    resizeLayer: function (id) {
-        var layer = this.layers[id];
-        if (layer) {
-            layer.width  = layer.canvas.width  = this.width;
-            layer.height = layer.canvas.height = this.height;
-
-            // Execute Layer callback
-            if (layer.callback) {
-                if (typeof layer.callback === 'function') {
-                    layer.callback();
-                } else if (typeof layer.callback === 'object' && layer.callback.func && layer.callback.context ) {
-                    layer.callback.func.call(layer.callback.context);
+                var type = parts.pop();
+                if (typeof this.factories[type] !== 'undefined') {
+                    // Create requested parameter
+                    constructorArgs.push(this.factories[type].create(arg));
                 } else {
-                    console.error('Invalid Layer resize callback. Valid = {Function} OR {{context: my_context, func: my_func}}.');
+                    console.error('Layer Factory : Can not find Factory for "' + type + '".');
                 }
             }
-        }
 
-        return this;
-    },
+            // Initialize Layer object
+            layer = new Layer[layerName](this.layerIndex, this.gridFrame);
 
-    createLayer: function (id, resizeCallback) {
-        var canvas = document.createElement('canvas');
+            // Configure Layer
+            var needRenderer = layer.getRendererName();
+            if (needRenderer) {
+                var renderer = this.rendererFactory.create(needRenderer);
+                layer.setRenderer(renderer);
+            }
 
-        canvas.id = id;
-        canvas.className = 'layer';
-        canvas.style.zIndex = this.layerIndex;
-
-        canvas.width = this.width;
-        canvas.height = this.height;
-
-        this.container.appendChild(canvas);
-
-        var layer = {
-            canvas: canvas,
-            context: canvas.getContext('2d'),
-            width: this.width,
-            height: this.height,
-            callback: resizeCallback ? resizeCallback : null
-        }
-
-        this.layers[id] = layer;
-
-        this.layerIndex++;
-
-        return layer;
-    },
-
-    removeLayer: function (id) {
-        if (this.layers[id]) {
-            delete this.layers[id];
-
-            this.layerIndex--;
-        }
-
-        return this;
-    },
-
-    getLayer: function (id) {
-        var layer = null;
-        if (this.layers[id]) {
-            layer = this.layers[id];
+            this.layerIndex++;
+        } else {
+            console.error('Layer Factory : Unknown Layer "' + layerName + '".');
         }
 
         return layer;
-    }
-};
+    };
+})();

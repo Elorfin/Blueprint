@@ -1,52 +1,57 @@
-'use strict';
+/**
+ * Abstract Tool
+ * Base class for all Tool objects
+ */
+(function () {
+    'use strict';
 
-Tool.Common.AbstractTool = function (LayerFactory, KeyFactory, UserInput, GridLayer) {
-    this.layerFactory = LayerFactory;
-    this.keyFactory   = KeyFactory;
-    this.userInput    = UserInput;
-    this.grid         = GridLayer;
+    Tool.Common.AbstractTool = function (GridFrame, KeyFrame) {
+        this.keyFrame  = KeyFrame;
+        this.gridFrame = GridFrame;
+    };
 
-    // Generate ID
-    this.id = Math.floor(Math.random() * Math.pow(10, 16));
+    Tool.Common.AbstractTool.prototype.constructor = Tool.Common.AbstractTool;
 
-    // Initialize Layer
-    this.layer = LayerFactory.createLayer(this.id, { context: this, func: this.draw });
+    Tool.Common.AbstractTool.prototype.name      = 'AbstractTool';
+    Tool.Common.AbstractTool.prototype.layerName = 'AbstractLayer';
 
-    this.draw();
-};
+    Tool.Common.AbstractTool.prototype.gridFrame = null;
+    Tool.Common.AbstractTool.prototype.layer     = null;
+    Tool.Common.AbstractTool.prototype.keyFrame  = null;
 
-Tool.Common.AbstractTool.prototype = {
-    id: null,
+    Tool.Common.AbstractTool.prototype.keys = [];
 
-    layerFactory: null,
+    Tool.Common.AbstractTool.prototype.getName = function () {
+        return this.name;
+    };
 
-    keyFactory: null,
+    Tool.Common.AbstractTool.prototype.getLayerName = function () {
+        return this.layerName;
+    };
 
-    userInput: null,
-
-    grid: null,
-
-    layer: null,
-
-    isEnabled: false,
-
-    commands: null,
-
-    constructor: Tool.Common.AbstractTool,
-
-    enable: function () {
-        this.isEnabled = true;
+    Tool.Common.AbstractTool.prototype.setLayer = function (layer) {
+        this.layer = layer;
 
         return this;
-    },
+    };
 
-    disable: function () {
-        this.isEnabled = false;
+    Tool.Common.AbstractTool.prototype.getCommands = function () {
+        console.warn('Abstract Tool : getCommands() method must be implemented in child objects.');
+
+        return [];
+    };
+
+    Tool.Common.AbstractTool.prototype.addKey = function (keyName, position) {
+        // Calculate ID of the key
+        var id = keyName + '-' + position.line + '-' + position.column;
+
+        // Check if the key already exists
+        if (typeof this.keys[id] === 'undefined') {
+            var key = new Key[keyName](this.gridFrame, position);
+
+            this.keys[id] = key;
+        }
 
         return this;
-    },
-
-    draw: function () {
-        console.log('draw() method must be implemented in child objects.');
-    }
-};
+    };
+})();

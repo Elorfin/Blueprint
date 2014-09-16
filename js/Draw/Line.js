@@ -1,8 +1,12 @@
 'use strict';
 
-Draw.Line = function () {};
+Draw.Line = function (context) {
+    this.context = context;
+};
 
 Draw.Line.prototype = {
+    context: null,
+
     /**
      * Color to use when not set by caller
      */
@@ -29,25 +33,25 @@ Draw.Line.prototype = {
      * @param end
      * @param options
      */
-    drawSolid: function (layer, start, end, options) {
+    drawSolid: function (start, end, options) {
         // Start new canvas path
-        layer.context.beginPath();
+        this.context.beginPath();
 
         // Move to start of line position
-        layer.context.moveTo(start.x, start.y);
+        this.context.moveTo(start.x, start.y);
 
         // Draw to end of line position
-        layer.context.lineTo(end.x, end.y);
+        this.context.lineTo(end.x, end.y);
 
         // End canvas path
-        layer.context.closePath();
+        this.context.closePath();
 
         // Set line styles
-        layer.context.lineWidth   = typeof options.width === 'number' ? options.width : this.defaultWidth;
-        layer.context.strokeStyle = typeof options.color === 'string' ? options.color : this.defaultColor;
+        this.context.lineWidth   = typeof options.width === 'number' ? options.width : this.defaultWidth;
+        this.context.strokeStyle = typeof options.color === 'string' ? options.color : this.defaultColor;
 
         // Display line
-        layer.context.stroke();
+        this.context.stroke();
 
         return this;
     },
@@ -59,8 +63,8 @@ Draw.Line.prototype = {
      * @param end
      * @param options
      */
-    drawDashed: function (layer, start, end, options) {
-        layer.context.beginPath();
+    drawDashed: function (start, end, options) {
+        this.context.beginPath();
 
         var lt = function (a, b) { return a <= b; };
         var gt = function (a, b) { return a >= b; };
@@ -79,7 +83,7 @@ Draw.Line.prototype = {
             checkX.cap = capmax;
         }
 
-        layer.context.moveTo(start.x, start.y);
+        this.context.moveTo(start.x, start.y);
         var offsetX = start.x;
         var offsetY = start.y;
 
@@ -92,21 +96,21 @@ Draw.Line.prototype = {
             offsetX = checkX.cap(end.x, offsetX + (Math.cos(ang) * len));
             offsetY = checkY.cap(end.y, offsetY + (Math.sin(ang) * len));
 
-            if (dash) layer.context.lineTo(offsetX, offsetY);
-            else layer.context.moveTo(offsetX, offsetY);
+            if (dash) this.context.lineTo(offsetX, offsetY);
+            else this.context.moveTo(offsetX, offsetY);
 
             dash = !dash;
         }
 
         // End canvas path
-        layer.context.closePath();
+        this.context.closePath();
 
         // Set line styles
-        layer.context.lineWidth   = typeof options.width === 'number' ? options.width : this.defaultWidth;
-        layer.context.strokeStyle = typeof options.color === 'string' ? options.color : this.defaultColor;
+        this.context.lineWidth   = typeof options.width === 'number' ? options.width : this.defaultWidth;
+        this.context.strokeStyle = typeof options.color === 'string' ? options.color : this.defaultColor;
 
         // Display line
-        layer.context.stroke();
+        this.context.stroke();
 
         return this;
     },
@@ -118,8 +122,8 @@ Draw.Line.prototype = {
      * @param end
      * @param options
      */
-    drawDotted: function (layer, start, end, options) {
-        layer.context.beginPath();
+    drawDotted: function (start, end, options) {
+        this.context.beginPath();
 
         var lt = function (a, b) { return a <= b; };
         var gt = function (a, b) { return a >= b; };
@@ -138,7 +142,7 @@ Draw.Line.prototype = {
             checkX.cap = capmax;
         }
 
-        layer.context.moveTo(start.x, start.y);
+        this.context.moveTo(start.x, start.y);
         var offsetX = start.x;
         var offsetY = start.y;
 
@@ -154,24 +158,24 @@ Draw.Line.prototype = {
 
             if (dot) {
                 // Draw dot
-                layer.context.arc(offsetX, offsetY, radius, 0, 2 * Math.PI, false);
+                this.context.arc(offsetX, offsetY, radius, 0, 2 * Math.PI, false);
             }
             else {
                 // Move to next position
-                layer.context.moveTo(offsetX, offsetY);
+                this.context.moveTo(offsetX, offsetY);
             }
 
             dot = !dot;
         }
 
         // End canvas path
-        layer.context.closePath();
+        this.context.closePath();
 
         // Set dots styles
-        layer.context.fillStyle = typeof options.color === 'string' ? options.color : this.defaultColor;
+        this.context.fillStyle = typeof options.color === 'string' ? options.color : this.defaultColor;
 
         // Display line
-        layer.context.fill();
+        this.context.fill();
 
         return this;
     }

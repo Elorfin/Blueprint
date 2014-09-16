@@ -1,11 +1,33 @@
-'use strict';
+/**
+ * Tool Factory
+ */
+(function () {
+    'use strict';
 
-Factory.ToolFactory = function (availableTools) {
-    this.availableTools = availableTools;
-};
+    /**
+     * Class constructor
+     * @constructor
+     */
+    Factory.ToolFactory = function (GridFrame, KeyFrame) {
+        // Call parent constructor
+        Factory.Common.AbstractFactory.call(this, GridFrame, KeyFrame);
+    };
 
-Factory.ToolFactory.prototype = {
-    availableTools: [],
+    /**
+     * Extends AbstractFactory
+     * @type {Factory.Common.AbstractFactory}
+     */
+    Factory.ToolFactory.prototype = Object.create(Factory.Common.AbstractFactory.prototype);
+    Factory.ToolFactory.prototype.constructor = Factory.ToolFactory;
 
-    constructor: Factory.ToolFactory
-};
+    Factory.ToolFactory.prototype.create = function (toolName) {
+        var tool = null;
+        if (Tool[toolName]) {
+            tool = new Tool[toolName](this.gridFrame, this.keyFrame);
+        } else {
+            console.error('Tool Factory : Unknown Tool "' + toolName + '".');
+        }
+
+        return tool;
+    };
+})();

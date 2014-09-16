@@ -11,9 +11,9 @@
      * @param position
      * @constructor
      */
-    Key.WallKey = function (GridLayer, UserInput, position) {
+    Key.WallKey = function (GridFrame, position) {
         // Call parent constructor
-        Key.Common.DraggableKey.call(this, GridLayer, UserInput, position);
+        Key.Common.DraggableKey.call(this, GridFrame, position);
 
         // Attach events to key
     };

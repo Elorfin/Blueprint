@@ -1,23 +1,21 @@
 'use strict';
 
-Key.Common.DraggableKey = function (GridLayer, UserInput, position) {
-    this.userInput = UserInput;
-
+Key.Common.DraggableKey = function (GridFrame, position) {
     // Call parent constructor
-    Key.Common.AbstractKey.call(this, GridLayer, position);
+    Key.Common.AbstractKey.call(this, GridFrame, position);
 
     // Attach events to key
-    var obj = this;
+    /*var obj = this;*/
 
-    this.element.addEventListener('mousedown', function (event) {
+    /*this.element.addEventListener('mousedown', function (event) {
         obj.isDragged = true;
         event.stopPropagation();
-    });
+    });*/
 
-    UserInput.registerEvent('mousedown', function () { return false; }, this, true);
+    /*UserInput.registerEvent('mousedown', function () { return false; }, this, true);
 
     UserInput.registerEvent('mousemove', this.drag, this, true);
-    UserInput.registerEvent('mouseup',   this.drop, this, true);
+    UserInput.registerEvent('mouseup',   this.drop, this, true);*/
 };
 
 // Extends AbstractKey

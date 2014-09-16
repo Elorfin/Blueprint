@@ -19,19 +19,6 @@ body {
     z-index: 1;
 }
 
-.layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.control-panel {
-    position: absolute;
-    z-index: 100000;
-    right: 10px;
-    top: 10px;
-}
-
 .wall-key {
     position: absolute;
     border: 2px solid;

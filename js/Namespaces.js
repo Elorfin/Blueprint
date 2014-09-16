@@ -3,7 +3,8 @@
 var Command = {};
 
 var Input = {};
-Input.User = {};
+Input.Common = {};
+Input.User   = {};
 
 var Cursor = {};
 Cursor.Common = {};
@@ -11,6 +12,9 @@ Cursor.Common = {};
 var Draw = {};
 
 var Factory = {};
+Factory.Common = {};
+
+var Frame = {};
 
 var Key = {};
 Key.Common = {};
@@ -19,6 +23,7 @@ var Layer = {};
 Layer.Common = {};
 
 var Renderer = {};
+Renderer.Common = {};
 
 var Tool = {};
 Tool.Common = {};

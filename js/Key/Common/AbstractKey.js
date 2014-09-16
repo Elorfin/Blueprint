@@ -1,7 +1,7 @@
 'use strict';
 
-Key.Common.AbstractKey = function (GridLayer, position) {
-    this.grid = GridLayer;
+Key.Common.AbstractKey = function (GridFrame, position) {
+    this.gridFrame = GridFrame;
 
     // Set up key properties
     this.position = position;
@@ -14,7 +14,7 @@ Key.Common.AbstractKey = function (GridLayer, position) {
 };
 
 Key.Common.AbstractKey.prototype = {
-    grid: null,
+    gridFrame: null,
 
     id: null,
 
@@ -48,7 +48,7 @@ Key.Common.AbstractKey.prototype = {
         }
 
         // Retrieve position in PX
-        var pos = this.grid.getXY(this.position.line, this.position.column);
+        var pos = this.gridFrame.getXY(this.position.line, this.position.column);
 
         // Position key
         var deltaY = this.element.offsetHeight / 2;
