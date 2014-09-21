@@ -1,5 +1,6 @@
 /**
- * Grid Layer
+ * Grid Frame
+ * Used to position elements
  */
 (function () {
     'use strict';
@@ -8,9 +9,17 @@
      * Class constructor
      * @constructor
      */
-    Frame.GridFrame = function () {};
+    Frame.GridFrame = function (width, height) {
+        this.resize(width, height);
+    };
 
     Frame.GridFrame.prototype.constructor = Frame.GridFrame;
+
+    /**
+     * Current viewport
+     * @type {object}
+     */
+    Frame.GridFrame.prototype.view = window;
 
     /**
      * Height of the Grid
@@ -55,20 +64,10 @@
     Frame.GridFrame.prototype.columns = [];
 
     /**
-     * Get list of grid lines
-     * @returns {Array}
+     * Registered callbacks to fire when Grid is recalculated
+     * @type {Array}
      */
-    Frame.GridFrame.prototype.getLines = function () {
-        return this.lines;
-    };
-
-    /**
-     * Get list of grid columns
-     * @returns {Array}
-     */
-    Frame.GridFrame.prototype.getColumns = function () {
-        return this.columns;
-    };
+    Frame.GridFrame.prototype.onChangeCallbacks = [];
 
     /**
      * Get real position for line and column
@@ -118,9 +117,9 @@
     };
 
     /**
-     *
-     * @param {Array}  axe
-     * @param {number} position
+     * Get the nearest intersection for the given position
+     * @param   {Array}  axe
+     * @param   {number} position
      * @returns {number}
      */
     Frame.GridFrame.prototype.getNearest = function (axe, position) {
@@ -150,6 +149,12 @@
         return nearest;
     };
 
+    /**
+     * Check if coordinates are on the Grid
+     * @param   {number} x
+     * @param   {number} y
+     * @returns {boolean}
+     */
     Frame.GridFrame.prototype.isOnGrid = function (x, y) {
         var onGrid = true;
         if ( this.columns[0] > x || x > this.columns[this.columns.length - 1]
@@ -158,18 +163,35 @@
         }
 
         return onGrid;
-    }
+    };
 
-    Frame.GridFrame.prototype.resize = function (event, width, height) {
+    /**
+     * Resize Grid
+     * @param   {number} width
+     * @param   {number} height
+     * @returns {Frame.GridFrame}
+     */
+    Frame.GridFrame.prototype.resize = function (width, height) {
         this.width  = width;
         this.height = height;
 
         this.build();
+
+        // Propagate on change event
+        this.executeOnChange();
+
+        return this;
     };
 
     /**
      * Get Grid config
-     * @returns {{lines: *, columns: *, amount: number, size: number, subdivisions: number}}
+     * @returns {{
+     *      lines       : Array,
+     *      columns     : Array,
+     *      amount      : number,
+     *      size        : number,
+     *      subdivisions: number
+     * }}
      */
     Frame.GridFrame.prototype.getConfig = function () {
         return {
@@ -178,7 +200,7 @@
             amount      : this.config.amount,
             size        : this.config.size,
             subdivisions: this.config.subdivisions
-        }
+        };
     };
 
     /**
@@ -219,6 +241,38 @@
         for (var x = xOffset; x < this.width; x += count + this.config.size) {
             this.columns.push(x + delta);
         }
+
+        return this;
+    };
+
+    /**
+     * Execute registered callbacks to Grid change event
+     * @returns {Frame.GridFrame}
+     */
+    Frame.GridFrame.prototype.executeOnChange = function () {
+        for (var i = 0; i < this.onChangeCallbacks.length; i++) {
+            var func = this.onChangeCallbacks[i];
+
+            // Call callback function
+            func.callback.apply(func.context, func.args);
+        }
+
+        return this;
+    };
+
+    /**
+     * Register a callback to fire when the Grid is recalculated
+     * @param   {function} callback
+     * @param   {object}   context
+     * @param   {object}   args
+     * @returns {Frame.GridFrame}
+     */
+    Frame.GridFrame.prototype.onChange = function (callback, context, args) {
+        this.onChangeCallbacks.push({
+            callback: callback,
+            context:  typeof context === 'object' ? context : null,
+            args:     typeof args    === 'object' ? args    : []
+        });
 
         return this;
     };

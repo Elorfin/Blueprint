@@ -6,9 +6,6 @@ var Input = {};
 Input.Common = {};
 Input.User   = {};
 
-var Cursor = {};
-Cursor.Common = {};
-
 var Draw = {};
 
 var Factory = {};

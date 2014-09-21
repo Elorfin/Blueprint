@@ -28,8 +28,8 @@
      * @type {{size: number, color: string}}
      */
     Layer.WallLayer.prototype.config = {
-        size: 7,
-        color: 'rgba(50, 180, 230, 1)'
+        size: 11,
+        color: '#ddd'
     };
 
     Layer.WallLayer.prototype.walls = [];
@@ -54,7 +54,7 @@
     Layer.WallLayer.prototype.drawWall = function (wall) {
         // Get position in PX
         var start = this.gridFrame.getXY(wall.start.line, wall.start.column);
-        var end = this.gridFrame.getXY(wall.end.line, wall.end.column);
+        var end   = this.gridFrame.getXY(wall.end.line,   wall.end.column);
 
         this.renderer.Line.drawSolid(start, end, {
             color: this.config.color,
@@ -81,6 +81,42 @@
 
         // Delete wall
         this.renderer.clearRect(minX - delta, minY - delta, width, height);
+
+        // Redraw existing walls
+        this.draw();
+
+        return this;
+    };
+
+    Layer.WallLayer.prototype.drawCursor = function (cursor) {
+        // Get position in PX
+        var position = this.gridFrame.getXY(cursor.line, cursor.column);
+
+        // Start new canvas path
+        this.renderer.context.beginPath();
+
+        this.renderer.context.arc(position.x, position.y, 7, 0, 2 * Math.PI, false);
+
+        this.renderer.context.closePath();
+
+        // Set line styles
+        this.renderer.context.fillStyle = '#ddd';
+
+        // Display line
+        this.renderer.context.fill();
+
+        return this;
+    };
+
+    Layer.WallLayer.prototype.clearCursor = function (cursor) {
+        // Get position in PX
+        var position = this.gridFrame.getXY(cursor.line, cursor.column);
+
+        // Delete cursor
+        this.renderer.clearRect(position.x - 8, position.y - 8, 16, 16);
+
+        // Redraw existing walls
+        this.draw();
 
         return this;
     };

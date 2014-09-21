@@ -15,18 +15,14 @@
         <script type="text/javascript" src="js/Input/User/MouseInput.js"></script>
 
         <script type="text/javascript" src="js/Draw/Line.js"></script>
+        <script type="text/javascript" src="js/Draw/Arc.js"></script>
 
         <script type="text/javascript" src="js/Factory/Common/AbstractFactory.js"></script>
-        <script type="text/javascript" src="js/Factory/CursorFactory.js"></script>
         <script type="text/javascript" src="js/Factory/LayerFactory.js"></script>
         <script type="text/javascript" src="js/Factory/ToolFactory.js"></script>
         <script type="text/javascript" src="js/Factory/RendererFactory.js"></script>
 
         <script type="text/javascript" src="js/Frame/GridFrame.js"></script>
-        <script type="text/javascript" src="js/Frame/KeyFrame.js"></script>
-
-        <script type="text/javascript" src="js/Cursor/Common/AbstractCursor.js"></script>
-        <script type="text/javascript" src="js/Cursor/WallCursor.js"></script>
 
         <script type="text/javascript" src="js/Key/Common/AbstractKey.js"></script>
         <script type="text/javascript" src="js/Key/Common/DraggableKey.js"></script>
@@ -34,11 +30,15 @@
 
         <script type="text/javascript" src="js/Tool/Common/AbstractTool.js"></script>
         <script type="text/javascript" src="js/Tool/WallTool.js"></script>
+        <script type="text/javascript" src="js/Tool/DoorTool.js"></script>
+        <script type="text/javascript" src="js/Tool/WindowTool.js"></script>
+
 
         <script type="text/javascript" src="js/Layer/Common/AbstractLayer.js"></script>
         <script type="text/javascript" src="js/Layer/GridLayer.js"></script>
         <script type="text/javascript" src="js/Layer/WallLayer.js"></script>
-        <script type="text/javascript" src="js/Layer/KeyLayer.js"></script>
+        <script type="text/javascript" src="js/Layer/DoorLayer.js"></script>
+        <script type="text/javascript" src="js/Layer/WindowLayer.js"></script>
 
         <script type="text/javascript" src="js/Renderer/Common/AbstractRenderer.js"></script>
         <script type="text/javascript" src="js/Renderer/DOMRenderer.js"></script>
@@ -48,20 +48,22 @@
     </head>
 
     <body>
-        <div id="blueprint"></div>
+        <div class="blueprint-container">
+            <div id="control-panel">
+                <div id="control-header"></div>
+                <ul id="control-list"></ul>
+            </div>
+            <div id="blueprint"></div>
+        </div>
     </body>
 
     <script type="text/javascript">
         (function () {
-            var container = document.getElementById('blueprint');
-
-            var blueprint = new Blueprint(container, [
-                'GridLayer',
-                'WallLayer',
-                'KeyLayer'
-            ], [
-                'WallTool'
-            ]);
+            var blueprint = new Blueprint(
+                document.getElementById('blueprint'),
+                [ 'WallLayer', 'DoorLayer', 'WindowLayer', 'GridLayer' ],
+                [ 'WallTool',  'DoorTool',  'WindowTool' ]
+            );
         })();
     </script>
 </html>

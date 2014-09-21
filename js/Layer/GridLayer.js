@@ -23,11 +23,13 @@
     Layer.GridLayer.prototype.name         = 'GridLayer';
     Layer.GridLayer.prototype.rendererName = 'Canvas2DRenderer';
 
+    Layer.GridLayer.prototype.opacity = 0.05;
+
     /**
      * Color of the Grid
      * @type {string}
      */
-    Layer.GridLayer.prototype.color = '#1496c8';
+    Layer.GridLayer.prototype.color = '#DDDDDD';
 
     /**
      * Draw grid

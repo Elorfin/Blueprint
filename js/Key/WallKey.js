@@ -28,10 +28,10 @@
     Key.WallKey.prototype.toolName = 'Wall';
 
     Key.WallKey.prototype.style = {
-        width          : '11px',
-        height         : '11px',
-        borderColor    : 'rgba(50, 180, 230, 1)',
-        borderRadius   : '11px',
-        backgroundColor: '#0082B4'
+        width          : '15px',
+        height         : '15px',
+        borderColor    : '#ddd',
+        borderRadius   : '15px',
+        backgroundColor: '#222'
     };
 })();

@@ -15,6 +15,12 @@
 
     Input.Common.AbstractInput.prototype.constructor = Input.Common.AbstractInput;
 
+    Input.Common.AbstractInput.prototype.priorityMap = {
+        HIGH  : 1,
+        NORMAL: 2,
+        LOW   : 3
+    };
+
     Input.Common.AbstractInput.prototype.actionMap = {};
 
     Input.Common.AbstractInput.prototype.actions = {};
@@ -26,8 +32,8 @@
      * @param actionName
      * @param callback
      */
-    Input.Common.AbstractInput.prototype.registerAction = function (id, actionName, callback) {
-        var action = this._buildAction(id, actionName, callback);
+    Input.Common.AbstractInput.prototype.registerAction = function (id, actionName, priority, callback) {
+        var action = this._buildAction(id, actionName, priority, callback);
         if (action) {
             this.actions[actionName].push(action);
         }
@@ -54,6 +60,11 @@
     Input.Common.AbstractInput.prototype.callActions = function (actionName, event) {
         var actions = this.actions[actionName];
         if (actions && actions.length !== 0) {
+            // Sort Actions by priority
+            actions.sort(function (a, b) {
+                return a.priority - b.priority;
+            });
+
             for (var i = 0; i < actions.length; i++) {
                 var action = actions[i];
 
@@ -69,11 +80,12 @@
      * Create a new registered action object
      * @param id
      * @param actionName
+     * @param priority
      * @param callback
      * @returns {*}
      * @private
      */
-    Input.Common.AbstractInput.prototype._buildAction = function (id, actionName, callback) {
+    Input.Common.AbstractInput.prototype._buildAction = function (id, actionName, priority, callback) {
         var action = null;
         if (-1 === this.actionMap[actionName]) {
             console.error('Try to register an invalid event.');
@@ -81,8 +93,9 @@
             action = {
                 id      : id,
                 name    : actionName,
+                priority: this.priorityMap[priority],
                 callback: callback
-            }
+            };
         }
 
         return action;

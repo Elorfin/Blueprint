@@ -16,6 +16,8 @@
     Command.CommandDelegator.prototype.commands = {};
     Command.CommandDelegator.prototype.enabled = {};
 
+    Command.CommandDelegator.prototype.priorities = ['HIGH', 'NORMAL', 'LOW'];
+
     Command.CommandDelegator.prototype.registerCommands = function (name, commandSet) {
         var commands = [];
         for (var i = 0; i < commandSet.length; i++) {
@@ -28,10 +30,11 @@
                 commands.push({
                     input: input,
                     action: current.action,
+                    priority : current.priority && -1 !== this.priorities.indexOf(current.priority) ? current.priority : 'NORMAL',
                     callback: {
-                        method: current.method,
-                        context: current.context ? current.context : null,
-                        args: current.context ? current.args : []
+                        method   : current.method,
+                        context  : current.context ? current.context : null,
+                        args     : current.args ? current.args : []
                     }
                 });
             }
@@ -40,8 +43,6 @@
         if (commands.length !== 0) {
             this.commands[name] = commands;
         }
-
-        this.enableCommands(name);
 
         return this;
     };
@@ -85,7 +86,7 @@
                 // Loop over commands to register events
                 for (var i = 0; i < commands.length; i++) {
                     var command = commands[i];
-                    command.input.registerAction(name, command.action, command.callback);
+                    command.input.registerAction(name, command.action, command.priority, command.callback);
                 }
             }
         } else {

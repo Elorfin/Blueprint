@@ -52,6 +52,7 @@
 
         // Initialize Drawers
         this.Line = new Draw.Line(this.context);
+        this.Arc  = new Draw.Arc(this.context);
 
         return this;
     };

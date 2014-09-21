@@ -38,58 +38,80 @@
      */
     Renderer.Common.AbstractRenderer.prototype.zIndex = 1;
 
-    Renderer.Common.AbstractRenderer.prototype.onChangeCallbacks = [];
+    /**
+     * Opacity of the renderer (0 <= opacity <= 1)
+     * @type {number}
+     */
+    Renderer.Common.AbstractRenderer.prototype.opacity = 1;
 
+    /**
+     * Set z-index of the renderer
+     * @param   {number} zIndex
+     * @returns {Renderer.Common.AbstractRenderer}
+     */
     Renderer.Common.AbstractRenderer.prototype.setZIndex = function (zIndex) {
         this.zIndex = zIndex;
 
         return this;
     };
 
-    Renderer.Common.AbstractRenderer.prototype.getWidth = function () {
-        console.log('AbstractRenderer : getWidth() method must be implemented in child objects.');
+    /**
+     * Set opacity of the renderer
+     * @param   {number} opacity
+     * @returns {Renderer.Common.AbstractRenderer}
+     */
+    Renderer.Common.AbstractRenderer.prototype.setOpacity = function (opacity) {
+        this.opacity = opacity;
+
+        return this;
     };
 
+    /**
+     * Get width of the renderer
+     * @returns {number}
+     */
+    Renderer.Common.AbstractRenderer.prototype.getWidth = function () {
+        console.warn('AbstractRenderer : getWidth() method must be implemented in child objects.');
+
+        return 0;
+    };
+
+    /**
+     * Get height of the renderer
+     * @returns {number}
+     */
     Renderer.Common.AbstractRenderer.prototype.getHeight = function () {
-        console.log('AbstractRenderer : getHeight() method must be implemented in child objects.');
+        console.warn('AbstractRenderer : getHeight() method must be implemented in child objects.');
+
+        return 0;
     };
 
     /**
      * Create renderer
+     * @returns {Renderer.Common.AbstractRenderer}
      */
     Renderer.Common.AbstractRenderer.prototype.create = function () {
-        console.log('AbstractRenderer : create() method must be implemented in child objects.');
+        console.warn('AbstractRenderer : create() method must be implemented in child objects.');
 
         return this;
     };
 
+    /**
+     * Resize renderer
+     * @returns {Renderer.Common.AbstractRenderer}
+     */
+    Renderer.Common.AbstractRenderer.prototype.resize = function () {
+        console.warn('AbstractRenderer : resize() method must be implemented in child objects.');
+
+        return this;
+    };
+
+    /**
+     * Clear renderer
+     * @returns {Renderer.Common.AbstractRenderer}
+     */
     Renderer.Common.AbstractRenderer.prototype.clear = function () {
-        console.log('AbstractRenderer : clear() method must be implemented in child objects.');
-
-        return this;
-    };
-
-    Renderer.Common.AbstractRenderer.prototype.executeOnChange = function (event) {
-        for (var i = 0; i < this.onChangeCallbacks.length; i++) {
-            var func = this.onChangeCallbacks[i];
-            var args = func.args ? func.args : [];
-
-            // Inject event into arguments array
-            var argArr = args.slice();
-            argArr.unshift(event);
-
-            func.callback.apply(func.context, argArr);
-        }
-
-        return this;
-    };
-
-    Renderer.Common.AbstractRenderer.prototype.onChange = function (callback, context, args) {
-        this.onChangeCallbacks.push({
-            callback: callback,
-            context:  typeof context === 'object' ? context : null,
-            args:     typeof args    === 'object' ? args    : null
-        });
+        console.warn('AbstractRenderer : clear() method must be implemented in child objects.');
 
         return this;
     };

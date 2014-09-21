@@ -11,13 +11,6 @@
      */
     Renderer.DOMRenderer = function (container) {
         Renderer.Common.AbstractRenderer.call(this, container);
-
-        // Observe view resize
-        this.view.addEventListener('resize', function (event) {
-            // Resize renderer
-            this.resize();
-            this.executeOnChange(event);
-        }.bind(this), false);
     };
 
     /**
@@ -53,6 +46,13 @@
     Renderer.Common.AbstractRenderer.prototype.setZIndex = function (zIndex) {
         this.zIndex = zIndex;
         this.element.style.zIndex = this.zIndex;
+
+        return this;
+    };
+
+    Renderer.Common.AbstractRenderer.prototype.setOpacity = function (opacity) {
+        this.opacity = opacity;
+        this.element.style.opacity = this.opacity;
 
         return this;
     };

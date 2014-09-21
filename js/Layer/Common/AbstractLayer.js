@@ -17,7 +17,16 @@
 
     Layer.Common.AbstractLayer.prototype.constructor = Layer.Common.AbstractLayer;
 
-    Layer.Common.AbstractLayer.prototype.name         = 'AbstractLayer';
+    /**
+     * Name of the Layer
+     * @type {string}
+     */
+    Layer.Common.AbstractLayer.prototype.name = 'AbstractLayer';
+
+    /**
+     * Name of the renderer class needed by the layer
+     * @type {string}
+     */
     Layer.Common.AbstractLayer.prototype.rendererName = 'AbstractRenderer';
 
     /**
@@ -28,36 +37,70 @@
 
     /**
      * Context to draw on
-     * @type {Object}
+     * @type {Renderer.Common.AbstractRenderer}
      */
     Layer.Common.AbstractLayer.prototype.renderer = null;
 
+    /**
+     * Z Index of the Layer
+     * @type {number}
+     */
     Layer.Common.AbstractLayer.prototype.zIndex = 1;
 
+    /**
+     * Opacity of the Layer
+     * @type {number}
+     */
+    Layer.Common.AbstractLayer.prototype.opacity = 1;
+
+    /**
+     * Configuration of the Layer
+     * @type {object}
+     */
     Layer.Common.AbstractLayer.prototype.config = {};
 
+    /**
+     * Get name for the Layer
+     * @returns {string}
+     */
     Layer.Common.AbstractLayer.prototype.getName = function () {
         return this.name;
     };
 
+    /**
+     * Get renderer name of the Layer
+     * @returns {string}
+     */
     Layer.Common.AbstractLayer.prototype.getRendererName = function () {
         return this.rendererName;
     };
 
+    /**
+     * Set renderer
+     * @param   {Renderer.Common.AbstractRenderer} renderer
+     * @returns {Layer.Common.AbstractLayer}
+     */
     Layer.Common.AbstractLayer.prototype.setRenderer = function (renderer) {
         this.renderer = renderer;
         this.renderer.setZIndex(this.zIndex);
-
-        // Avoid redraw at each initialisation
-        this.gridFrame.resize(null, this.renderer.getWidth(), this.renderer.getHeight());
+        this.renderer.setOpacity(this.opacity);
 
         this.draw();
 
-        // Recalculate GridFrame when renderer change
-        this.renderer.onChange(this.gridFrame.resize, this.gridFrame, [this.renderer.getWidth(), this.renderer.getHeight()]);
-
         // Redraw Layer when Renderer change
-        this.renderer.onChange(this.draw, this);
+        this.gridFrame.onChange(this.resize, this, []);
+
+        return this;
+    };
+
+    /**
+     * Resize the Layer
+     * @returns {Layer.Common.AbstractLayer}
+     */
+    Layer.Common.AbstractLayer.prototype.resize = function () {
+        this.renderer.resize();
+
+        this.draw();
 
         return this;
     };
@@ -68,6 +111,28 @@
      */
     Layer.Common.AbstractLayer.prototype.draw = function () {
         console.warn('draw() method must be implemented in child objects.');
+
+        return this;
+    };
+
+    /**
+     * Draw cursor on Layer
+     * @param   {{line: number, column: number}} cursor
+     * @returns {Layer.Common.AbstractLayer}
+     */
+    Layer.Common.AbstractLayer.prototype.drawCursor = function (cursor) {
+        console.warn('drawCursor() method must be implemented in child objects.');
+
+        return this;
+    };
+
+    /**
+     * Delete cursor
+     * @param   {{line: number, column: number}} cursor
+     * @returns {Layer.Common.AbstractLayer}
+     */
+    Layer.Common.AbstractLayer.prototype.clearCursor = function (cursor) {
+        console.warn('clearCursor() method must be implemented in child objects.');
 
         return this;
     };

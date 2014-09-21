@@ -8,9 +8,9 @@
      * Class constructor
      * @constructor
      */
-    Factory.ToolFactory = function (GridFrame, KeyFrame) {
+    Factory.ToolFactory = function (GridFrame) {
         // Call parent constructor
-        Factory.Common.AbstractFactory.call(this, GridFrame, KeyFrame);
+        Factory.Common.AbstractFactory.call(this, GridFrame);
     };
 
     /**
@@ -23,7 +23,7 @@
     Factory.ToolFactory.prototype.create = function (toolName) {
         var tool = null;
         if (Tool[toolName]) {
-            tool = new Tool[toolName](this.gridFrame, this.keyFrame);
+            tool = new Tool[toolName](this.gridFrame);
         } else {
             console.error('Tool Factory : Unknown Tool "' + toolName + '".');
         }

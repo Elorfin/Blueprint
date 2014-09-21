@@ -1,14 +1,45 @@
 'use strict';
 
 var Blueprint = function (container, layers, tools) {
+    this.initialize(container, layers, tools);
+
+    this.view.addEventListener('resize', function () {
+        this.resize();
+    }.bind(this), false);
+};
+
+Blueprint.prototype.constructor = Blueprint;
+
+Blueprint.prototype.view = window;
+
+Blueprint.prototype.container = null;
+Blueprint.prototype.width = 0;
+Blueprint.prototype.height = 0;
+
+Blueprint.prototype.gridFrame = null;
+
+Blueprint.prototype.layerFactory     = null;
+Blueprint.prototype.toolFactory      = null;
+Blueprint.prototype.commandDelegator = null;
+
+Blueprint.prototype.layers = {};
+Blueprint.prototype.tools = {};
+
+Blueprint.prototype.activeTool = null;
+
+Blueprint.prototype.backgroundColor = '#242424';
+
+Blueprint.prototype.initialize = function (container, layers, tools) {
     this.container = container;
     this.container.style.backgroundColor = this.backgroundColor;
 
-    this.gridFrame = new Frame.GridFrame();
-    this.keyFrame  = new Frame.KeyFrame();
+    this.width  = this.container.offsetWidth;
+    this.height = this.container.offsetHeight;
 
-    this.layerFactory = new Factory.LayerFactory(this.gridFrame, this.keyFrame, this.container);
-    this.toolFactory  = new Factory.ToolFactory(this.gridFrame, this.keyFrame);
+    this.gridFrame = new Frame.GridFrame(this.width, this.height);
+
+    this.layerFactory = new Factory.LayerFactory(this.gridFrame, this.container);
+    this.toolFactory  = new Factory.ToolFactory(this.gridFrame);
     this.commandDelegator = new Command.CommandDelegator();
 
     // Initialize layers
@@ -33,6 +64,7 @@ var Blueprint = function (container, layers, tools) {
         }
 
         this.tools[tool.getName()] = tool;
+        this.createToolButton(tool);
     }
 
     // Register commands
@@ -42,18 +74,76 @@ var Blueprint = function (container, layers, tools) {
             this.commandDelegator.registerCommands(toolName, commands);
         }
     }
+
+    return this;
 };
 
-Blueprint.prototype.constructor = Blueprint;
+Blueprint.prototype.resize = function () {
+    this.width  = this.container.offsetWidth;
+    this.height = this.container.offsetHeight;
 
-Blueprint.prototype.gridFrame = null;
+    // Resize Grid
+    this.gridFrame.resize(this.width, this.height);
+};
 
-Blueprint.prototype.layerFactory     = null;
-Blueprint.prototype.toolFactory      = null;
-Blueprint.prototype.commandDelegator = null;
+Blueprint.prototype.createToolButton = function (tool) {
+    var toolName = tool.getName();
 
-Blueprint.prototype.layers = {};
-Blueprint.prototype.tools = {};
+    // Create HTML Element
+    var button = document.createElement('li');
 
-Blueprint.prototype.container = null;
-Blueprint.prototype.backgroundColor = '#0082B4';
+    button.id = toolName;
+    button.className = 'tool-button';
+
+    // Create icon
+    var buttonIcon = document.createElement('span');
+    buttonIcon.className = 'tool-icon';
+    buttonIcon.style.backgroundImage = 'url("icons/' + toolName + '.png")';
+
+    button.appendChild(buttonIcon);
+
+    // Attach button to DOM
+    var controlPanel = document.getElementById('control-list');
+    controlPanel.appendChild(button);
+
+    button.addEventListener('click', function (toolName, event) {
+        event = event || window.event;
+
+        if (toolName === this.activeTool) {
+            this.disableActiveTool();
+        } else {
+            this.enableTool(toolName);
+        }
+
+        event.stopPropagation();
+    }.bind(this, toolName), false);
+
+    return this;
+};
+
+Blueprint.prototype.enableTool = function (toolName) {
+    // Disable current active tool
+    this.disableActiveTool();
+
+    this.commandDelegator.enableCommands(toolName);
+
+    var button = document.getElementById(toolName);
+    button.className += ' tool-active';
+
+    this.activeTool = toolName;
+
+    return this;
+};
+
+Blueprint.prototype.disableActiveTool = function () {
+    if (this.activeTool) {
+        this.commandDelegator.disableCommands(this.activeTool);
+
+        var button = document.getElementById(this.activeTool);
+        button.className = 'tool-button';
+
+        this.activeTool = null;
+    }
+
+    return this;
+};

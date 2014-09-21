@@ -9,9 +9,9 @@
      * @param {HTMLElement} container
      * @constructor
      */
-    Factory.LayerFactory = function (GridFrame, KeyFrame, container) {
+    Factory.LayerFactory = function (GridFrame, container) {
         // Call parent constructor
-        Factory.Common.AbstractFactory.call(this, GridFrame, KeyFrame);
+        Factory.Common.AbstractFactory.call(this, GridFrame);
 
         this.container = container;
 

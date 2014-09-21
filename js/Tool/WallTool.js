@@ -11,9 +11,9 @@
      * @param WallLayer
      * @constructor
      */
-    Tool.WallTool = function (GridFrame, KeyFrame) {
+    Tool.WallTool = function (GridFrame) {
         // Call parent constructor
-        Tool.Common.AbstractTool.call(this, GridFrame, KeyFrame);
+        Tool.Common.AbstractTool.call(this, GridFrame);
     };
 
     /**
@@ -23,8 +23,8 @@
     Tool.WallTool.prototype = Object.create(Tool.Common.AbstractTool.prototype);
     Tool.WallTool.prototype.constructor = Tool.WallTool;
 
-    Tool.Common.AbstractTool.prototype.name      = 'WallTool';
-    Tool.Common.AbstractTool.prototype.layerName = 'WallLayer';
+    Tool.WallTool.prototype.name       = 'WallTool';
+    Tool.WallTool.prototype.layerName  = 'WallLayer';
 
     Tool.WallTool.prototype.current = {
         start: null,
@@ -32,11 +32,13 @@
     };
 
     Tool.WallTool.prototype.getCommands = function () {
-        return [
-            { input: 'user.mouse', action: 'down', method: this.startDrawing, context: this, args: [] },
-            { input: 'user.mouse', action: 'move', method: this.isDrawing   , context: this, args: [] },
-            { input: 'user.mouse', action: 'up',   method: this.stopDrawing , context: this, args: [] }
-        ];
+        var commands = Tool.Common.AbstractTool.prototype.getCommands.call(this);
+
+        commands.push({ input: 'user.mouse', action: 'downLeft', method: this.startDrawing, context: this });
+        commands.push({ input: 'user.mouse', action: 'move',     method: this.isDrawing   , context: this });
+        commands.push({ input: 'user.mouse', action: 'upLeft',   method: this.stopDrawing , context: this });
+
+        return commands;
     };
 
     Tool.WallTool.prototype.startDrawing = function (event) {
@@ -45,6 +47,9 @@
             this.current.start = this.current.end = this.gridFrame.getPosition(event.clientX, event.clientY);
 
             this.addKey('WallKey', this.current.start);
+
+            // Disable cursor when user is drawing
+            this.cursorEnabled = false;
         }
 
         return this;
@@ -59,14 +64,17 @@
                 // Clear old wall
                 this.layer.clearWall(this.current);
 
+                // Clear old cursor
+                this.layer.clearCursor(this.current.end);
+
                 // Replace end
                 this.current.end = wallEnd;
 
                 // Draw new wall
                 this.layer.drawWall(this.current);
 
-                // Redraw existing walls
-                this.layer.draw();
+                // Draw cursor
+                this.layer.drawCursor(this.current.end);
             }
         }
 
@@ -87,10 +95,10 @@
         }
         else {
             this.layer.clearWall(this.current);
-
-            // Redraw existing walls
-            this.layer.draw();
         }
+
+        // Enable cursor
+        this.cursorEnabled = true;
 
         // Clear current drawing
         this.current.start = null;
