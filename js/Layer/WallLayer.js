@@ -35,7 +35,7 @@
     Layer.WallLayer.prototype.walls = [];
 
     Layer.WallLayer.prototype.draw = function () {
-        this.renderer.clear();
+        this.renderer.Eraser.eraseAll();
 
         for (var i = 0; i < this.walls.length; i++) {
             this.drawWall(this.walls[i]);
@@ -80,7 +80,7 @@
         var height = (maxY - minY) + this.config.size + 2;
 
         // Delete wall
-        this.renderer.clearRect(minX - delta, minY - delta, width, height);
+        this.renderer.Eraser.erase(minX - delta, minY - delta, width, height);
 
         // Redraw existing walls
         this.draw();
@@ -88,22 +88,22 @@
         return this;
     };
 
+    /**
+     * Draw Layer cursor
+     *
+     *    o
+     *
+     * @param   {{line: number, column: number}} cursor
+     * @returns {Layer.WallLayer}
+     */
     Layer.WallLayer.prototype.drawCursor = function (cursor) {
         // Get position in PX
         var position = this.gridFrame.getXY(cursor.line, cursor.column);
 
-        // Start new canvas path
-        this.renderer.context.beginPath();
-
-        this.renderer.context.arc(position.x, position.y, 7, 0, 2 * Math.PI, false);
-
-        this.renderer.context.closePath();
-
-        // Set line styles
-        this.renderer.context.fillStyle = '#ddd';
-
-        // Display line
-        this.renderer.context.fill();
+        this.renderer.Arc.drawSolid(position, 7, 0, 2 * Math.PI, {
+            fillStyle       : '#ddd',
+            counterClockwise: false
+        });
 
         return this;
     };
@@ -113,7 +113,7 @@
         var position = this.gridFrame.getXY(cursor.line, cursor.column);
 
         // Delete cursor
-        this.renderer.clearRect(position.x - 8, position.y - 8, 16, 16);
+        this.renderer.Eraser.erase(position.x - 8, position.y - 8, 16, 16);
 
         // Redraw existing walls
         this.draw();

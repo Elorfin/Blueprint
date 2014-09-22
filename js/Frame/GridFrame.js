@@ -51,6 +51,8 @@
         subdivisions: 4
     };
 
+    Frame.GridFrame.prototype.squareSize = null;
+
     /**
      * Position Y for each line of the grid
      * @type {Array}
@@ -203,6 +205,10 @@
         };
     };
 
+    Frame.GridFrame.prototype.getSquareSize = function () {
+        return this.squareSize;
+    };
+
     /**
      * Build grid
      * @returns {Frame.GridFrame}
@@ -222,13 +228,15 @@
 
         var count = (maxLength - (maxLength % this.config.amount)) / this.config.amount;
 
+        this.squareSize = count + this.config.size;
+
         // Draw lines
         var modY = this.height % count;
         var nbLines = (this.height - modY) / count;
 
         var yOffset = Math.floor((modY - (nbLines * this.config.size)) / 2);
 
-        for (var y = yOffset; y < this.height; y += count + this.config.size) {
+        for (var y = yOffset; y < this.height; y += this.squareSize) {
             this.lines.push(y + delta);
         }
 
@@ -238,7 +246,7 @@
 
         var xOffset = Math.floor((modX - (nbColumns * this.config.size)) / 2);
 
-        for (var x = xOffset; x < this.width; x += count + this.config.size) {
+        for (var x = xOffset; x < this.width; x += this.squareSize) {
             this.columns.push(x + delta);
         }
 

@@ -28,7 +28,7 @@
      * @type {{size: number, color: string}}
      */
     Layer.DoorLayer.prototype.config = {
-        length: 2,
+        length: 3, // default length in Grid square
         size: 11,
         color: '#ddd'
     };
@@ -36,7 +36,7 @@
     Layer.DoorLayer.prototype.doors = [];
 
     Layer.DoorLayer.prototype.draw = function () {
-        this.renderer.clear();
+        this.renderer.Eraser.eraseAll();
 
         for (var i = 0; i < this.doors.length; i++) {
             this.drawDoor(this.doors[i]);
@@ -58,7 +58,6 @@
         var end   = this.gridFrame.getXY(door.end.line, door.end.column);
         var orientation = door.orientation ? door.orientation : 1;
 
-        context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
 
         this.renderer.Line.drawSolid(start, end, {
             color: this.config.color,
@@ -84,7 +83,83 @@
         var height = (maxY - minY) + this.config.size + 2;
 
         // Delete wall
-        this.renderer.clearRect(minX - delta, minY - delta, width, height);
+        this.renderer.Eraser.erase(minX - delta, minY - delta, width, height);
+
+        return this;
+    };
+
+    /**
+     * Draw Layer cursor
+     *
+     *        /
+     *      /
+     *    o       o
+     *
+     * @param   {{line: number, column: number}} cursor
+     * @returns {Layer.DoorLayer}
+     */
+    Layer.DoorLayer.prototype.drawCursor = function (cursor) {
+        var cursorEnd = { line: cursor.line, column: cursor.column - this.config.length };
+
+        // Get position in PX
+        var positionStart = this.gridFrame.getXY(cursor.line, cursor.column);
+        var positionEnd   = this.gridFrame.getXY(cursorEnd.line, cursorEnd.column);
+
+        var squareSize = this.gridFrame.getSquareSize();
+
+        // Draw rect to hide wall
+        this.renderer.context.beginPath();
+        this.renderer.context.rect(positionEnd.x, positionEnd.y - 6, squareSize * 3, 12);
+
+        this.renderer.context.fillStyle = '#242424';
+        this.renderer.context.fill();
+
+        // Create Door bounds
+        this.renderer.Arc.drawSolid(positionStart, 7, 0, 2 * Math.PI, {
+            fillStyle       : '#ddd',
+            counterClockwise: false
+        });
+
+        this.renderer.Arc.drawSolid(positionEnd, 7, 0, 2 * Math.PI, {
+            fillStyle       : '#ddd',
+            counterClockwise: false
+        });
+
+        // Create Door
+        var delta = squareSize * 3 * (Math.sqrt(2) / 2);
+
+        this.renderer.Line.drawSolid(
+            positionEnd,
+            { x: positionEnd.x + delta, y: positionEnd.y - delta },
+            { color: '#ddd', width: 4 }
+        );
+
+        // Create open arc
+        this.renderer.Arc.drawDashed(positionEnd, Math.abs(positionStart.x - positionEnd.x), 0, -Math.PI / 4, {
+            width           : 1,
+            length          : 5,
+            color           : '#ddd',
+            counterClockwise: true
+        });
+
+        return this;
+    };
+
+    Layer.DoorLayer.prototype.clearCursor = function (cursor) {
+        var cursorEnd = { line: cursor.line, column: cursor.column - this.config.length };
+
+        // Get position in PX
+        var positionStart = this.gridFrame.getXY(cursor.line, cursor.column);
+        var positionEnd   = this.gridFrame.getXY(cursorEnd.line, cursorEnd.column);
+
+        var squareSize = this.gridFrame.getSquareSize();
+        var delta =  squareSize * 3 * (Math.sqrt(2) / 2);
+
+        // Delete cursor
+        this.renderer.Eraser.erase(positionEnd.x - 8, positionEnd.y - delta - 2, squareSize * 3 + 16, delta + 10);
+
+        // Redraw existing walls
+        this.draw();
 
         return this;
     };

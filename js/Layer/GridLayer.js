@@ -36,7 +36,7 @@
      * @returns {Layer.GridLayer}
      */
     Layer.GridLayer.prototype.draw = function () {
-        this.renderer.clear();
+        this.renderer.Eraser.eraseAll();
 
         // Get Grid configuration
         var gridConfig = this.gridFrame.getConfig();

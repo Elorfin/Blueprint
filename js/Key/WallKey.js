@@ -25,7 +25,7 @@
     Key.WallKey.prototype = Object.create(Key.Common.DraggableKey.prototype);
     Key.WallKey.prototype.constructor = Key.WallKey;
 
-    Key.WallKey.prototype.toolName = 'Wall';
+    Key.WallKey.prototype.name = 'WallKey';
 
     Key.WallKey.prototype.style = {
         width          : '15px',

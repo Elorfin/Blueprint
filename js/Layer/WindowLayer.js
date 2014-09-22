@@ -36,7 +36,7 @@
     Layer.WindowLayer.prototype.windows = [];
 
     Layer.WindowLayer.prototype.draw = function () {
-        this.renderer.clear();
+        this.renderer.Eraser.eraseAll();
 
         for (var i = 0; i < this.windows.length; i++) {
             this.drawWindow(this.windows[i]);
@@ -82,7 +82,7 @@
         var height = (maxY - minY) + this.config.size + 2;
 
         // Delete wall
-        this.renderer.clearRect(minX - delta, minY - delta, width, height);
+        this.renderer.Eraser.erase(minX - delta, minY - delta, width, height);
 
         return this;
     };

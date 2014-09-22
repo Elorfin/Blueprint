@@ -105,14 +105,4 @@
 
         return this;
     };
-
-    /**
-     * Clear renderer
-     * @returns {Renderer.Common.AbstractRenderer}
-     */
-    Renderer.Common.AbstractRenderer.prototype.clear = function () {
-        console.warn('AbstractRenderer : clear() method must be implemented in child objects.');
-
-        return this;
-    };
 })();

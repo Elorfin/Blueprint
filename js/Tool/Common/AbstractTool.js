@@ -42,7 +42,7 @@
 
     /**
      * Position of the Cursor if drawn
-     * @type {{ x: number, y: number }}
+     * @type {{ line: number, column: number }}
      */
     Tool.Common.AbstractTool.prototype.cursor = null;
 

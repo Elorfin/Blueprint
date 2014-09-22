@@ -51,24 +51,9 @@
         this.context = canvas.getContext('2d');
 
         // Initialize Drawers
-        this.Line = new Draw.Line(this.context);
-        this.Arc  = new Draw.Arc(this.context);
-
-        return this;
-    };
-
-    /**
-     * Reset renderer
-     * @returns {Renderer.Canvas2DRenderer}
-     */
-    Renderer.Canvas2DRenderer.prototype.clear = function () {
-        this.context.restore();
-
-        return this;
-    };
-
-    Renderer.Canvas2DRenderer.prototype.clearRect = function (x, y, width, height) {
-        this.context.clearRect(x, y, width, height);
+        this.Line   = new Draw.Line(this.context);
+        this.Arc    = new Draw.Arc(this.context);
+        this.Eraser = new Draw.Eraser(this.context);
 
         return this;
     };
