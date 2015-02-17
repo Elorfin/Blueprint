@@ -2,6 +2,8 @@
 
 var Command = {};
 
+var Component = {};
+
 var Input = {};
 Input.Common = {};
 Input.User   = {};

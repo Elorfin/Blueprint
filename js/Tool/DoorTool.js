@@ -31,6 +31,8 @@
     Tool.DoorTool.prototype.draw = function (event) {
         if (this.gridFrame.isOnGrid(event.clientX, event.clientY)) {
             console.log('draw door');
+
+            var position = this.gridFrame.getPosition(event.clientX, event.clientY);
         }
     };
 })();

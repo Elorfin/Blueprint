@@ -32,6 +32,10 @@
         color: '#ddd'
     };
 
+    /**
+     * List of Walls
+     * @type {Array}
+     */
     Layer.WallLayer.prototype.walls = [];
 
     Layer.WallLayer.prototype.draw = function () {
